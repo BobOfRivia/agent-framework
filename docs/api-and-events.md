@@ -58,7 +58,7 @@
 
 `RunContext` 至少含 task_id、session_id、revision/lock digest、principal/delegation scope、输入产物引用、deadline、预算预留、effective policy、workspace handle、lease fence。不要把原始主密钥作为 RunContext 的序列化字段。
 
-工具必须通过 ToolGateway：`prepare -> authorize/approval -> dispatch -> record outcome`。普通 Python callable、shell 和插件不能绕过这一入口取得额外 authority。
+自有执行路径的工具必须通过ToolGateway：`prepare -> authorize/approval -> dispatch -> record outcome`。Codex专用执行器在job边界受理与授权，内部工具依赖原生策略和隔离；不能宣称完整逐工具拦截。内部Runner按profile返回可支持的暂停/恢复/计量能力，见[执行器设计](architecture/coding-executor.md)。
 
 Task与children创建请求必须携带acceptance_contract。审批拒绝/过期注入denied observation，补充输入与unknown核对分别使用inputs/reconcile端点；状态迁移细则见领域合同“阻塞条件如何解除”。通用resume不能代替这些操作。
 

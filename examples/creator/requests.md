@@ -9,6 +9,7 @@
 | web.search / 0.1.0 | max_results:10 | web.search | local/cloud，通过受控网络工具 |
 | file.read / 0.1.0 | 无；root授权由实例/任务绑定 | file.read | local/cloud，仅获授权工作区 |
 | code.python / 0.1.0 | timeout_seconds:120 | code.execute | local/cloud，隔离环境，默认无网络 |
+| coding.codex / 0.1.0 | 任务scope由CodexRunner绑定 | coding.execute | 现成Codex专用执行器；团队员工cloud，job边界治理 |
 | artifact.publish / 0.1.0 | 无 | artifact.publish | local/cloud，提交hash/类型/ACL |
 | task.delegate / 0.1.0 | 无 | task.delegate | 目标须允许，限制深度/预算与输入共享 |
 | task.inspect / 0.1.0 | 无 | task.read | 仅当前Space/受限委派视图 |
@@ -34,7 +35,7 @@
 预期步骤：
 
 1. Creator补齐权重、归一化、缺值和同分规则，形成可判定输入输出。
-2. 编码专员在构建沙箱生成一个Python工具包、manifest、参数schema与依赖锁。
+2. 内置Codex编码员工在构建沙箱生成Python工具包、manifest、参数schema与依赖锁；平台不实现另一套coding loop。
 3. 测试正常样本、缺字段、非法数值、零范围、路径越权；用确定性参考值校验。
 4. 工具通过后登记新版本，Creator装配新员工，再用全新实例运行。
 5. 发布报告记录包hash、权限要求、测试证据；任何失败不能成为当前版本。

@@ -40,6 +40,8 @@
 
 `AgentSpec` 是 AgentRevision 内的声明数据，示例见 [配置 schema](../schemas/agent-revision.schema.json)。不要把 LangGraph 状态对象直接当业务表，也不要将框架 subagent 字典作为长期员工身份。
 
+首版团队员工实例的部署策略只允许cloud；个人助手按已登记能力允许local/cloud。本地专用文件、应用与内网工作由个人助手承接。通用runtime_profile为deepagents.standard.v1，内置编码员工为codex.sdk.v1，二者共用业务合同但不共享原生checkpoint格式。参见[Codex边界](architecture/coding-executor.md)。
+
 `delegation.allowed_roles` 是定义中可委派的稳定角色别名，例如 researcher/analyst；AgentInstance 的 delegation_bindings 将角色映射到已获授权的实例或跨 Space delegation pair。Task创建时保存实际绑定快照。模板不含另一个部署的实例ID；绑定变化需重新授权，仅影响新Task。
 
 Task 的 `acceptance_contract` 固定必要产物类型、逐项验收criteria及可选结构化result_schema；JSON结果由服务端真实验证。AgentRevision输出合同是基础约束，任务合同只能细化，不能取消能力与权限要求。children采用同一创建合同。goal、execution与权限范围实质变化须创建新Task；补充资料和review反馈作为追加事件保存。
@@ -106,6 +108,7 @@ stateDiagram-v2
 - 一个 session 可以跨多个 RunAttempt，但每次 attempt 只有一个有效执行者。MVP 中一个 RunAttempt 对应一次持久执行段，而不是把每个 token/model call 当作 attempt。
 - 工具审批保存 pending call 和 checkpoint 后进入 blocked/waiting_approval，并释放运行租约。批准后新 attempt 从同一 session 的 checkpoint 恢复，调用前再次验证摘要与权限。
 - graph 可能在恢复时重新进入节点；有副作用的动作统一经过 ToolGateway，以稳定 action_key 和账本判重。不能只在 graph 节点内发请求再依赖 checkpoint。
+- 上述逐工具约束适用于自有执行路径；Codex原生内部动作采用job边界+原生审批+OS隔离治理，不能声称逐调用经过自有网关。原生会话恢复信息由专用adapter保存。
 - action_key关联持久tool intent，不从attempt_no或重新生成的模型call_id直接构造。恢复先核对未完成intent；检查点与调用账本不一致时由reconciler处理，不能直接生成第二次写入。
 - session checkpoint 不包含唯一的产物副本或长期主凭据；恢复能力须以故障注入实验验证。
 
@@ -130,6 +133,7 @@ MVP 必须支持同一部署内个人空间与一个团队空间的预授权协�
 ## 7. 预算计量合同
 
 - max_model_calls、max_tool_calls、max_runtime_seconds累计计算同Task各attempt，恢复不清零。runtime指活跃执行秒数，blocked/review/排队等待不计入；并行分支的活跃秒数相加。
+- max_runtime_seconds为所有profile必需；Deep Agents调用次数限制可由请求给出或服务端默认补齐。Codex仅接受已验证可强制的原生限额，缺失计量不当作零；不支持的请求限制返回422，不能默默忽略。Codex作业至少强制job时限和环境资源限制，内部调用上限不冒充平台逐工具硬限额。
 - 父Task分派前为子Task预留额度；父预算覆盖自身及子树。子完成只结算一次实际用量并释放未用预留，不能父子重复扣除同一笔消费。临时subagent也计入同一预算。
 - max_cost_usd为基于provider定价/用量的估算限制；调用前保守预留并结合调用次数硬限制，不承诺与供应商最终账单绝对相等。取消后在途调用可能产生尾差，必须记账并停止新调用。
 - 所有Task另有deadline_at，默认创建后24小时，可在创建时收紧；超过deadline不再执行新步骤，由服务标记failed/deadline_exceeded并清理。等待不计活跃秒数，但不越过deadline。

@@ -5,6 +5,8 @@
 ## 1. 已确认的决定
 
 - 主运行栈 LangGraph / Deep Agents，具体版本由 M0 验证并锁定。
+- 内置编码员工使用现成Codex SDK/CLI，Creator按需委派；不自行实现Coding Agent内核，参见[执行器设计](docs/architecture/coding-executor.md)。
+- 团队数字员工首版运行于cloud；个人端处理本机文件、应用、本地项目和内网，个人助手也可显式选cloud。
 - 个人助手与数字员工采用同一基座；所有者／权限和 local/cloud 执行位置独立。
 - 任务发起前显式选择位置。云任务直接委派云端 worker，用户离线继续；本地任务设备离线则等待。
 - 云数字员工是持久身份和事件／计划任务能力；计算按需租用。
@@ -28,6 +30,7 @@
 - 验证 Deep Agents + LangGraph/PostgreSQL checkpointer 的组合；运行一个真实模型工具任务，保存并恢复 checkpoint。
 - 验证工具审批 interrupt/resume、持久 pending call 与副作用防重放。
 - 验证框架内置文件/shell/MCP/临时subagent不能绕过网关；恢复时action_key绑定持久意图而非新attempt。
+- 验证Codex专用执行器的真实修改/测试、原生session续接、取消与权限边界；原生内部工具不能伪装成已逐调用经过自有网关。
 - 验证云 worker 可独立于 HTTP 客户端退出继续执行；M0 可先做单机 spike，M7 才证明远端云场景。
 - 验证开发 Docker 执行后宿主目录边界、环境回收和产物保留。
 - 把精确依赖、实验过程、失败与替代方案记录在 `docs/compatibility-matrix.md`（该文件由 M0 创建）。

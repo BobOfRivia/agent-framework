@@ -25,6 +25,8 @@ Task 保留原始发起人、代表谁执行、委派链、目标 owner 与策�
 
 AgentRevision 发布不可变且不含凭据。工具、shell、browser 和内建文件能力都进入 ToolGateway 的 `prepare -> authorize/approval -> dispatch -> record outcome` 路径。接入 DeepAgents 时必须替换／包裹会产生实际动作的内建工具；未接入授权账本的高权限能力暂不启用。Python 代码层“调用了网关”不构成恶意插件无法绕开的安全沙箱；M6 自定义代码仍需独立执行与审查。
 
+本段逐工具承诺只适用于自有Deep Agents路径。内置Codex是专用执行器，平台限制job scope、输入、工作区、网络、账号、资源和正式结果发布，配合原生审批，不宣称拦截所有内部调用。首版Codex不提供生产写入/外发/正式发布凭据；旧fence阻止新job和正式产物接纳，仍运行的原生命令需由进程/环境停止或核对处理。详见[执行器边界](architecture/coding-executor.md)。
+
 ## 3. Space 与数据授权
 
 - API 根据已认证 principal、membership/grant 和路径交叉计算 Space；不信任 body 中的 owner/tenant 字段。

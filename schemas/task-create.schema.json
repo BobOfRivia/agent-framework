@@ -125,8 +125,6 @@
       "type": "object",
       "additionalProperties": false,
       "required": [
-        "max_model_calls",
-        "max_tool_calls",
         "max_runtime_seconds"
       ],
       "properties": {

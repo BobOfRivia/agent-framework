@@ -28,7 +28,7 @@ flowchart TB
     Runtime --> Work[TaskWorkspace / 可选 sandbox]
 ```
 
-以模块化单体起步：API 与 worker 可以独立进程部署，但复用同一领域代码和数据库。不在第一阶段拆微服务，也不引入第二套 runtime 或 Temporal。
+以模块化单体起步：API 与 worker 可以独立进程部署，复用同一领域代码和数据库。通用员工由Deep Agents运行；内置编码员工使用现成Codex专用执行器，共用Task合同，不自研编码循环。Temporal等额外编排平台后置，详见[编码执行器](coding-executor.md)。
 
 | 边界 | 权威来源 | 不承担的职责 |
 | --- | --- | --- |

@@ -13,6 +13,8 @@
 
 能力元数据由项目维护。DeepAgents middleware 是该框架的实现机制，不承诺与其他内核的 lifecycle hook 或 capability 对象互换；对外暴露中立能力描述，对内由适配器装配。
 
+内置coding.codex能力通过CodexRunner执行专用编码Task。它的原生内部工具不声称经过上述逐工具网关；平台控制job授权、目录、网络、账号、时间和结果接纳，配合原生审批/隔离。受控code.python计算工具仍可独立存在，不形成自研编程Agent循环。
+
 ## CapabilityDescriptor 最小契约
 
 每个可发布能力必须包含以下元数据；字段名称可在数据/API 设计中统一，但语义不能缺失。

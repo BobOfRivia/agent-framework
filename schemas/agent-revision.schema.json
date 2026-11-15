@@ -53,14 +53,16 @@
     },
     "runtime_profile": {
       "enum": [
-        "deepagents.standard.v1"
+        "deepagents.standard.v1",
+        "codex.sdk.v1"
       ]
     },
     "model_profile": {
       "enum": [
         "general",
         "fast",
-        "reasoning"
+        "reasoning",
+        "coding"
       ]
     },
     "capabilities": {

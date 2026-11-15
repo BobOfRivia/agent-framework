@@ -4,9 +4,11 @@
 
 实体/状态规范见 [领域模型](../domain-model.md)，接口规范见 [API 与事件](../api-and-events.md)；发生冲突时先同步规范与 ADR。v0.1 中 tenant 是 Space，`tenant_id = space_id`。
 
-## ADR-001：模块化单体与单一执行栈
+## ADR-001：模块化单体与主执行栈
 
 **决策**：FastAPI + Postgres + worker；Web 使用 TypeScript / React，本地先提供 Python daemon + CLI。DeepAgents 负责常规执行，LangGraph 承载状态与控制。
+
+澄清：专用编码员工按ADR-009复用Codex；“单一主栈”不禁止现成专用执行器，但不自研另一套通用编程Agent内核。
 
 **理由与代价**：减少首版基础设施与双运行时维护，保留领域/应用/基础设施边界。Temporal、多 runtime、原生桌面客户端后置；新内核通过适配器接入，不能反向改写产品状态模型。
 
@@ -67,3 +69,11 @@
 **理由与代价**：路径根目录、提示词和 subagent 上下文隔离都不能替代系统隔离；生产部署前须有独立安全验收。
 
 **验证**：M0 明确开发信任边界，检查本地 shell 与容器挂载；生产准入标准由安全文档定义，本文不替代。[官方本地 backend 限制](https://docs.langchain.com/oss/python/deepagents/backends)。
+
+## ADR-009：云员工优先，编码直接复用Codex
+
+**决策**：首版团队数字员工部署cloud；个人助手的local执行聚焦本机文件、软件、项目和内网。编码员工采用现成Codex SDK/CLI执行器，Creator和统筹以子Task委派，不实现自有coding loop。
+
+**理由与代价**：复用成熟代码编辑、测试和上下文循环；平台保留工作定义、输入授权、隔离、版本、审阅与发布。原生工具观测/审批/恢复与框架checkpoint不同，需专用adapter和能力矩阵，不能伪装逐内部工具接入自有ToolGateway。
+
+**验证**：M0跑真实修改/测试/续接/取消与权限实验；WP-04接入，WP-11复用；AC-15保留真实Codex调用与独立验证证据。详见[编码执行器](coding-executor.md)。

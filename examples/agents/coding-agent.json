@@ -1,0 +1,53 @@
+{
+  "schema_version": "1",
+  "definition_id": "coding-agent",
+  "version": "0.1.0",
+  "name": "内置Codex编码员工",
+  "description": "复用现成Codex，按受限任务修改代码并运行测试。",
+  "instructions": "严格按任务范围工作，提交文件diff、实际测试命令和退出码。不能自行发布生产内容或修改平台授权。",
+  "runtime_profile": "codex.sdk.v1",
+  "model_profile": "coding",
+  "capabilities": [
+    {
+      "id": "coding.codex",
+      "version": "0.1.0",
+      "config": {
+        "mode": "workspace_edit_and_test"
+      }
+    },
+    {
+      "id": "artifact.publish",
+      "version": "0.1.0",
+      "config": {}
+    }
+  ],
+  "skills": [],
+  "environment": {
+    "allowed_targets": [
+      "cloud"
+    ],
+    "requires_sandbox": true,
+    "network_profile": "allowlist"
+  },
+  "delegation": {
+    "enabled": false,
+    "allowed_roles": [],
+    "max_depth": 0,
+    "max_parallel_children": 1
+  },
+  "memory": {
+    "private_enabled": false,
+    "project_access": "read"
+  },
+  "output_contract": {
+    "kind": "artifacts",
+    "required_media_types": [
+      "text/x-diff",
+      "application/json"
+    ]
+  },
+  "requested_actions": [
+    "coding.execute",
+    "artifact.publish"
+  ]
+}

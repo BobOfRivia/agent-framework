@@ -12,6 +12,7 @@
 
 - [整体架构](architecture/overview.md)
 - [运行时、LangGraph 与 Deep Agents](architecture/runtime.md)
+- [内置Codex编码执行器](architecture/coding-executor.md)
 - [领域模型与状态机](domain-model.md)
 - [API、事件和设备协议](api-and-events.md)
 - [能力、技能与插件](architecture/capabilities.md)
@@ -38,6 +39,7 @@
 - [Task 创建 schema](../schemas/task-create.schema.json)
 - [事件 schema](../schemas/task-event.schema.json)
 - [研究员](../examples/agents/researcher.json)、[分析员](../examples/agents/analyst.json)、[统筹员工](../examples/agents/coordinator.json)、[个人助手](../examples/agents/personal-assistant.json)
+- [内置Codex员工](../examples/agents/coding-agent.json)、[云端编码任务](../examples/tasks/cloud-coding.json)
 - [云端任务](../examples/tasks/cloud-research.json)、[本地任务](../examples/tasks/local-analysis.json)
 - [Creator 需求与扩展验收例](../examples/creator/requests.md)
 

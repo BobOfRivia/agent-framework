@@ -36,12 +36,14 @@ MVP 默认 human review，最终交付先进入 review；内部只读子任务�
 1. TaskService 在事务中登记任务、负责人、环境、验收规则与 AgentRevision；调度事件与状态一同持久化。
 2. 调度器先确认目标可用；local 设备不可达时记录 `blocked(waiting_device)`。目标 worker 接单时取得有效 lease/fence。
 3. 创建或连接 ExecutionSession；附着 TaskWorkspace，按需创建 sandbox。运行前检查能力、环境、数据和授权是否兼容。
-4. 执行适配层启动 DeepAgents；LangGraph 承载状态、检查点、中断与控制流程。所有工具调用经过网关，记录稳定调用 ID、授权决策与结果。
+4. 通用适配层启动DeepAgents，LangGraph承载状态与检查点；自有工具逐调用经过网关。编码员工由[CodexRunner](coding-executor.md)启动现成Codex，以job边界、原生权限和环境隔离治理，保存独立原生session引用。
 5. Worker 更新心跳和执行事件，登记 Artifact；验收通过后完成，否则进入 review。TaskService 才能提交产品级状态转换。
 
 ## 审批、重试与恢复
 
 审批等待写入任务 `blocked(waiting_approval)` 和 checkpoint 引用，释放有效执行 lease。审批绑定具体动作、参数摘要、资源与 revision；恢复先 blocked → queued，再创建新 RunAttempt、获取新 lease/fence 并检查授权，在原 ExecutionSession 中继续，不能用旧审批覆盖新的动作。用户暂停使用 user_paused，外部结果待核对使用 recovery_required，二者不能互相替代。
+
+上述checkpoint步骤适用于自有Deep Agents路径。Codex必须在M0登记原生审批/暂停/取消/进程重启/续接能力矩阵，支持安全脱离时才释放执行权；不支持的原生等待不得假称已保存LangGraph检查点。原生进程可能仍在运行时禁止启动第二个job；无法确认进入recovery_required。所有profile仍只有一个有效产品执行权。
 
 | 故障 | 恢复动作 |
 | --- | --- |

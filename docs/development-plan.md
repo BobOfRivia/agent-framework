@@ -39,17 +39,17 @@ M0/M1 的单机验证不替代 M7 的真正云后台执行。任何关键安全�
 | 编号 | 工作内容与产物 | 依赖 | 量级 | 验收映射 |
 | --- | --- | --- | --- | --- |
 | WP-00 | Python 项目、锁文件、lint/typecheck/test、最小 CI、前后端目录约定、配置校验 | 无 | S | AC-01/21 |
-| WP-01 | 上游兼容矩阵；真实模型+工具、PostgreSQL checkpoint、interrupt恢复、Docker实验；记录替代方案 | WP-00 | M | AC-10/11/12/19 |
+| WP-01 | 上游兼容矩阵；真实模型+工具、PostgreSQL checkpoint、interrupt恢复、Docker实验；Codex SDK/CLI修改/测试/续接/权限spike | WP-00 | M | AC-10/11/12/19 |
 | WP-02 | Space/成员/AgentRevision/Instance/Task migration；认证、授权查询、版本固定、schema验证 | WP-01 | M | AC-01/02/03/25 |
 | WP-03 | PostgreSQL持久jobs、事务Outbox、TaskService状态机、租约/fence、幂等创建、SSE补拉 | WP-02 | L | AC-08/09/18 |
-| WP-04 | DeepAgentsRunner、模型adapter、session-thread映射、上下文装配、ToolGateway、可重复fake runner | WP-03 | L | AC-10/11/17/24 |
+| WP-04 | DeepAgentsRunner和内置CodexRunner适配、原生session映射、事件/产物/取消控制、ToolGateway、可重复fake runner；不自研编码循环 | WP-03 | L | AC-10/11/17/24 |
 | WP-05 | TaskWorkspace、Docker开发provider、沙箱租约、代码执行、artifact版本/ACL/provenance | WP-04 | L | AC-13/19/24/25 |
 | WP-06 | 本地daemon/CLI、一次性配对、TLS出站连接、根目录授权、心跳/离线/重连/撤销 | WP-05 | L | AC-05/07/24 |
 | WP-07 | 权限交集、Approval参数绑定、pause/cancel/resume、unknown副作用核对、预算预留/结算 | WP-04/06 | L | AC-08/09/11/12/17 |
 | WP-08 | Web项目群/私聊/任务线程、成员邀请、@路由、任务卡、artifact查看、审批/审阅操作 | WP-03/07 | L | AC-13/18/20 |
 | WP-09 | 统筹员工调用Task工具；子任务依赖/并行预算；DelegationRequest个人团队协作；基础持久日程 | WP-07/08 | L | AC-06/07/20/26 |
 | WP-10 | 能力Registry；Creator需求解析/装配；草稿编辑、样例测试、digest校验、不可变发布、实例化/回滚 | WP-05/09 | L | AC-14/16/25 |
-| WP-11 | 单一Python工具扩展包格式；编码专员、隔离构建、测试、权限声明、包hash、登记与版本发布 | WP-10 | L | AC-15/16/19 |
+| WP-11 | Creator委派内置Codex生成Python工具包；隔离构建、独立测试、权限声明、包hash、登记与版本发布 | WP-10 | L | AC-15/16/19 |
 | WP-12 | 远端部署说明、health/metrics/log脱敏、secret配置、TLS、备份恢复、环境清理与成本控制 | WP-07/11 | M | AC-04/21/22 |
 | WP-13 | 三套真实样例、故障注入回归、质量评估、需求追踪、Beta发布记录与新用户复现 | WP-12 | L | 全部AC，重点AC-23 |
 

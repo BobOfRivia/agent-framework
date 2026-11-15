@@ -15,6 +15,7 @@
 ## 初版目标
 
 - Creator 通过参数、提示词、已登记工具与技能创建 Agent；存在能力缺口时调用编码专员，测试后发布扩展。
+- 数字员工首版默认在云端；个人端聚焦本机私有文件、应用、本地项目与内网能力。内置编码员工直接接入现成Codex，详见[执行器设计](docs/architecture/coding-executor.md)。
 - 同一执行基座承载个人助手和长期数字员工，配置、实例身份、私有记忆和授权分别管理。
 - 发布任务时指定 local/cloud。云任务在独立云主机 worker 和沙箱中执行，用户关机后继续；本地设备离线则明确等待。
 - 在类似 IM 的项目群邀请员工与个人助手，由统筹员工拆解和委派；系统记录负责人、依赖、状态、预算与验收。
@@ -41,7 +42,7 @@
 
 默认 Python 3.12、FastAPI、PostgreSQL、Python worker、LangGraph 与 Deep Agents；Web 使用 TypeScript / React；本地先提供 Python daemon + CLI。具体依赖版本由 M0 核实兼容性后锁定。模块化单体起步，API 与执行 worker 分进程部署。
 
-云沙箱 provider 与持久工作区通过自有接口接入；开发 Docker 不能据此宣称具备敌对多租户强隔离。第一版不要求厂商托管控制面、LangSmith 或第二套 Agent loop。
+云沙箱 provider 与持久工作区通过自有接口接入；开发 Docker 不能据此宣称具备敌对多租户强隔离。通用员工采用Deep Agents，编码员工复用Codex专用执行器；第一版不要求厂商托管控制面或LangSmith，不自研编码Agent loop。
 
 ## 当前可执行的校验
 

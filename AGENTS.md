@@ -14,6 +14,7 @@
 - 不以群成员／组织管理员身份读取个人助手私有记忆和账号；跨 Space 走 DelegationRequest。
 - 不让 Creator 或生成代码自行授予凭据、扩大授权或绕过发布校验。
 - 不将桌面 UI 长连接当作云任务运行保障。
+- 不自研Coding Agent循环；内置编码员工使用Codex SDK/CLI专用执行器。通用员工继续Deep Agents，跨员工通过TaskService。Codex原生工具治理与自有ToolGateway区分，按docs/architecture/coding-executor.md执行。
 - 不以 mock、本机容器或聊天完成文案替代真实云部署、文件产物和验收证据。
 
 ## 合同优先级
