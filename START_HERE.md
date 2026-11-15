@@ -5,6 +5,7 @@
 ## 1. 已确认的决定
 
 - 主运行栈 LangGraph / Deep Agents，具体版本由 M0 验证并锁定。
+- [复用策略](docs/architecture/reuse-strategy.md)已确认：通用基础能力优先现成实现，M0评估任务队列/Temporal，不默认自建调度引擎，也不直接叠加多层恢复。
 - 内置编码员工使用现成Codex SDK/CLI，Creator按需委派；不自行实现Coding Agent内核，参见[执行器设计](docs/architecture/coding-executor.md)。
 - 团队数字员工首版运行于cloud；个人端处理本机文件、应用、本地项目和内网，个人助手也可显式选cloud。
 - 个人助手与数字员工采用同一基座；所有者／权限和 local/cloud 执行位置独立。
@@ -27,6 +28,7 @@
 执行工作包 `WP-00` 和 `WP-01`：
 
 - 建立 Python 3.12 项目管理、测试/lint、最小目录及 CI；版本选择以可安装、兼容性实验为依据。
+- 产出调度选型记录：现成持久队列的轻量路线与外层Temporal长期工作流路线各自解决什么，测试事务投递/重启/人审等待/副作用未知；选定一种执行权威后才能开始WP-03。此阶段不要求购买或同时部署全部候选服务。
 - 验证 Deep Agents + LangGraph/PostgreSQL checkpointer 的组合；运行一个真实模型工具任务，保存并恢复 checkpoint。
 - 验证工具审批 interrupt/resume、持久 pending call 与副作用防重放。
 - 验证框架内置文件/shell/MCP/临时subagent不能绕过网关；恢复时action_key绑定持久意图而非新attempt。
@@ -45,6 +47,7 @@
 docs/domain-model.md、docs/development-plan.md、docs/testing-strategy.md。
 核实当前 LangGraph/Deep Agents 兼容版本，建立可重复开发环境并运行
 checkpoint、审批恢复和沙箱 spike。保留已有用户改动；未验证的行为明确标记。
+遵循复用策略，先评估成熟调度方案及各层重试/恢复归属，不自建通用队列。
 完成后更新兼容矩阵、实际执行命令、验收证据与下一会话工作包。
 ```
 
@@ -52,7 +55,7 @@ M0 完成后的下一会话提示可改为“实现 M1 的 WP-02/03，满足对�
 
 ## 5. 开发时可自行采用的默认值
 
-Python 3.12、FastAPI、PostgreSQL 作为事务与持久队列、独立 Python worker、React/TypeScript Web、Python 本地 daemon/CLI；先 Linux 云端 + macOS 本地支持，其他 OS 视验证结果扩展。MVP 采用一套注册审批的模型 provider，adapter 不写死厂商。
+Python 3.12、FastAPI、PostgreSQL作为业务事务库、独立Python worker、React/TypeScript Web、Python本地daemon/CLI；调度实现由M0在成熟队列/外层Temporal中选择。先Linux云端+macOS本地支持，其他OS按需验证。模型provider、云sandbox、trace后端分别先选一个，优先框架已有adapter；adapter不写死厂商，不先实现多provider平台。
 
 这些是项目可调整默认，非用户对语言或基础设施供应商的最终承诺。变化要写 ADR，不必为常规可逆实现选择反复等待确认。
 

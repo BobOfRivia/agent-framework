@@ -21,6 +21,8 @@
 
 ## 实现缺口的归属
 
+复用/调度选型由WP-01/03/05/12和AC-27横切覆盖R-02、R-05、R-09、R-12、R-13，不增加新产品功能需求。见[复用策略](architecture/reuse-strategy.md)。
+
 LangGraph负责持久控制与checkpoint，Deep Agents负责执行harness；员工归属、跨Space授权、任务权威状态、Creator治理、artifact与审阅均由本产品合同提供。框架存在对应名词不能视为需求已完成。
 
 新增需求须新增R编号、明确MVP范围并分配WP/AC；改变既有需求语义要记录ADR，不能只修改一处提示词。

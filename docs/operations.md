@@ -4,11 +4,13 @@
 
 ## 1. 首版运行形态
 
-默认 FastAPI 控制面、PostgreSQL、持久 DB jobs、Python worker、React Web，以及本地 Python daemon + CLI。云执行与本地执行共享任务合同，分别由 cloud worker 与设备网关派发。初期不为了排队额外引入 Redis/Celery；独立队列系统如以后采用，不能取代业务数据库的事实来源。
+默认FastAPI控制面、PostgreSQL业务库、Python worker、React Web和本地daemon/CLI。dispatch由M0在成熟持久队列与外层Temporal中选择，不能将下文参考流程解释为要求自研通用队列。云/本地共享产品合同；具体队列、认证服务与观测后端尚未安装或选定。
 
 生产配置与开发配置分开。开发 Docker sandbox 仅用于可信 beta 的能力和生命周期验证，公开恶意多租户生产能力参见[风险清单](risks-and-open-questions.md)。详细状态转换以[领域模型](domain-model.md)为准。
 
-## 2. DB jobs 与执行租约
+## 2. 调度适配与执行权（PG参考路径）
+
+本节是当前PG参考合同：队列库承担投递、worker生命周期、重试/定时；薄层映射产品Task、执行权和账本。若M0选Temporal，先把API命令、Task数据库投影、workflow历史、恢复引用和预算/审批信号的权威写入合同，再替换本节；禁止在现有调度旁简单并行再加一套。
 
 1. 创建 Task 与其初始 DomainEvent/Outbox 在同一事务提交，HTTP 返回 202。
 2. 调度器按 `available_at`、能力、Space 配额和设备状态选择任务；数据库短事务认领，不能在数据库行锁内等待 LLM 或 shell。
@@ -35,6 +37,8 @@ Task 固定 token／模型费用、工具费用、sandbox 时间、最长时长�
 
 ## 4. 可观测性
 
+复用OpenTelemetry和一个选定的LLM观测后端，优先已有LangGraph/Deep Agents集成；不自建trace采集、查询与评估平台。业务状态/审计仍按产品合同持久化，观测trace不是Task状态来源。脱敏、存储地域与Space可见性在导出前校验。
+
 每条 trace 关联 Space、Task、ExecutionSession、RunAttempt、fence、工具 call_id 与 delegation relation；跨 Space 页面仅显示 viewer 被授权的数据。高频 token delta 与终端输出为非权威流，业务状态、最终结果和正式产物必须持久化。
 
 | 维度 | 首批指标／排查信息 |
@@ -54,6 +58,8 @@ Task 固定 token／模型费用、工具费用、sandbox 时间、最长时长�
 ## 5. 备份范围与恢复目标
 
 必须联合备份 PostgreSQL 中的任务/事件/授权/revision/账本/checkpoint、云 TaskWorkspace manifest、ArtifactVersion 内容及其 hash。数据库备份只含 storage_ref 而对象已丢失时，不算完整恢复。
+
+若采用Temporal，还要对workflow历史、版本与保留/恢复方案制定一致性策略；不能只备份产品PG就宣称可恢复。采用官方集成时checkpoint归属按M0决策调整，不在PG和workflow历史间保存两套独立恢复权威。
 
 密钥由独立 secret store 的备份／恢复流程管理，不能把主密钥混入 workspace 归档。备份加密、权限隔离，并至少保留一个不依赖同一运行节点的副本。RPO/RTO、备份频率和保留周期在部署选型后实测约定；本文件不编造可用性或零数据丢失承诺。
 
@@ -97,4 +103,4 @@ AgentRevision/lock 不变；运行中的 Task 不随实例默认 revision 更新
 - M4：父子任务预算、跨Space受理／共享、群聊重复回调与权限负例。
 - beta交付：至少一次隔离恢复演练；报告实测恢复时间、数据缺口、费用差异和未解决事项。
 
-[Temporal Activities 官方文档](https://docs.temporal.io/activities)可用于理解重试、幂等与checkpoint边界；本项目首版使用DB jobs，不因此宣称已经采用Temporal或具备其全部保证。
+[Temporal Activities官方文档](https://docs.temporal.io/activities)可用于理解重试、幂等与执行边界。调度实现尚待M0选择，本项目当前未实现DB队列或Temporal运行链，也不因此宣称具备任一组件的全部保证。

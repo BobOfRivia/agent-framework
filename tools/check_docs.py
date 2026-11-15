@@ -53,7 +53,7 @@ def check():
         except (ValueError, UnicodeError) as exc:
             errors.append("Invalid JSON %s: %s" % (path.relative_to(ROOT), exc))
 
-    for relative, prefix, first, last in (("docs/product-requirements.md", "R", 1, 14), ("docs/acceptance.md", "AC", 1, 26), ("docs/development-plan.md", "WP", 0, 13)):
+    for relative, prefix, first, last in (("docs/product-requirements.md", "R", 1, 14), ("docs/acceptance.md", "AC", 1, 27), ("docs/development-plan.md", "WP", 0, 13)):
         path = ROOT / relative
         if path.exists():
             found = set(re.findall(r"\b" + prefix + r"-\d{2}\b", path.read_text(encoding="utf-8")))

@@ -4,6 +4,8 @@
 
 设计澄清：团队员工首版cloud；个人端聚焦本机资源；内置编码员工复用现成Codex SDK/CLI。已新增专用执行器合同和ADR-009，M0增加Codex集成spike，未实现或运行该集成。
 
+复用策略已确认：新增ADR-010和AC-27，M0必须完成成熟队列/外层Temporal选型；复用现成harness/checkpointer/backend/浏览器/文件/认证/观测，不将候选全部加入依赖。当前尚未选择dispatch实现或部署新增服务。
+
 ## 已有内容
 
 - 产品需求、用户流程、架构与 ADR。

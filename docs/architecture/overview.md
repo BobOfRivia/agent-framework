@@ -28,7 +28,7 @@ flowchart TB
     Runtime --> Work[TaskWorkspace / 可选 sandbox]
 ```
 
-以模块化单体起步：API 与 worker 可以独立进程部署，复用同一领域代码和数据库。通用员工由Deep Agents运行；内置编码员工使用现成Codex专用执行器，共用Task合同，不自研编码循环。Temporal等额外编排平台后置，详见[编码执行器](coding-executor.md)。
+以模块化单体起步：API与worker独立进程部署，复用领域代码。通用员工由Deep Agents运行；编码员工复用Codex。调度在M0比较成熟队列与外层Temporal后确定，不默认自建通用调度引擎；见[复用策略](reuse-strategy.md)与[编码执行器](coding-executor.md)。
 
 | 边界 | 权威来源 | 不承担的职责 |
 | --- | --- | --- |
@@ -38,6 +38,8 @@ flowchart TB
 | CapabilityRegistry / 工具网关 | 能力契约、授权检查、调用记录 | skills 不绕过此边界 |
 | WorkspaceService | TaskWorkspace、文件、产物引用、session 资源 | 不把群聊历史当文件系统 |
 | Creator | 可审阅草稿、测试证据、不可变发布包 | 不直接修改在线 revision |
+
+上述是产品责任边界；其内部应复用框架checkpointer/backend、现成dispatch、标准认证、browser/file库与观测平台。员工岗位优先定义为prompt+skills+tools配置，不为每个岗位建设独立执行内核。薄适配保留依赖差异和能力矩阵，不设计抹平所有后端的通用SDK。
 
 ## 建议的软件包边界
 

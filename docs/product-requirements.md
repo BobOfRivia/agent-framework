@@ -8,6 +8,8 @@
 
 核心价值是可复用身份、能力、任务、执行与协作合同。LangGraph/Deep Agents负责执行基础，产品自己掌握员工归属、授权、Creator、任务权威状态、产物和审阅。
 
+复用原则已确认：通用harness、官方checkpointer、Codex、沙箱adapter、浏览器/办公库、标准认证与观测优先使用成熟实现。各岗位主要是prompt+skills+tools配置；产品不发展成自研通用队列、浏览器或文件格式引擎。调度由M0比较成熟队列与外层Temporal后决定，见[复用策略](architecture/reuse-strategy.md)。
+
 ## 2. 已确认与可调整默认
 
 已确认：数字人指角色、任务、工具与协作的数字员工；先本人/小团队使用再产品化；主框架LangGraph/Deep Agents；coding是按需使用的基础能力；Creator以参数/提示词/能力装配为主，也支持需要时生成代码、测试、发布。
@@ -73,7 +75,7 @@ SHOULD：角色模板、任务复制、清晰的阻塞原因与恢复入口、�
 
 ## 8. 初版成功标准
 
-[14个工作包](development-plan.md)按依赖交付；[26条验收](acceptance.md)全部具备证据；三类真实模型业务场景各5次至少4次达到rubric；权限、审批、旧fence和未知副作用负例全部通过。单团队负载/响应目标按验收环境测量，不推导公开SaaS SLA。
+[14个工作包](development-plan.md)按依赖交付；[27条验收](acceptance.md)全部具备证据；三类真实模型业务场景各5次至少4次达到rubric；权限、审批、旧fence和未知副作用负例全部通过。单团队负载/响应目标按验收环境测量，不推导公开SaaS SLA。
 
 ## 9. 变更规则
 

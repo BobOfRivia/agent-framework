@@ -6,6 +6,8 @@
 
 Python 3.12 + uv、FastAPI、Pydantic、SQLAlchemy/Alembic、PostgreSQL、LangGraph/Deep Agents、pytest/ruff/type checker；Web为TypeScript/React和Vite。M0选定精确兼容版本并提交锁文件，不在设计阶段编造版本号。模型provider经adapter接入，首版至少一条真实模型路径。
 
+调度不预设自建DB jobs：按[复用策略](architecture/reuse-strategy.md)选择现成投递/工作流实现。官方checkpointer与backend直接复用；浏览器用成熟驱动、文件用成熟格式库、登录对接OIDC身份源、追踪复用OTel及一个后端。只有需求触发的能力才进入锁文件，不将候选清单全部安装。
+
 首个支持矩阵：Linux云服务与macOS本地daemon；本地Windows/Linux和原生桌面壳为后续兼容工作。浏览器文件上传／任务控制属于Web客户端，本机文件／应用能力属于daemon。
 
 ## 建议代码布局（尚未创建）

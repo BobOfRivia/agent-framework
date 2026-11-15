@@ -42,6 +42,8 @@
 
 默认 Python 3.12、FastAPI、PostgreSQL、Python worker、LangGraph 与 Deep Agents；Web 使用 TypeScript / React；本地先提供 Python daemon + CLI。具体依赖版本由 M0 核实兼容性后锁定。模块化单体起步，API 与执行 worker 分进程部署。
 
+采用[成熟组件优先的复用策略](docs/architecture/reuse-strategy.md)：框架原生能力、官方检查点、现成Codex、沙箱适配、浏览器/文件库、标准认证与观测优先复用。M0先比较现成任务队列与外层Temporal，明确调度/恢复权威后再实现WP-03；目前未选定队列库或引入Temporal。
+
 云沙箱 provider 与持久工作区通过自有接口接入；开发 Docker 不能据此宣称具备敌对多租户强隔离。通用员工采用Deep Agents，编码员工复用Codex专用执行器；第一版不要求厂商托管控制面或LangSmith，不自研编码Agent loop。
 
 ## 当前可执行的校验

@@ -2,6 +2,8 @@
 
 状态：v0.1 设计基线，尚未实现。日期：2026-11-15。本文是数据、状态、隔离和恢复语义的规范来源；冲突时先修订本文及对应 ADR，再修改实现。
 
+调度说明：本文以PG事务+成熟dispatch实现为当前参考路径，M0将评估外层Temporal。采用Temporal前必须修订Task状态权威/数据库投影、命令投递、checkpoint、租约与重试映射；不能原封不动叠加另一套状态恢复。产品不变量保留，通用调度机制优先复用，见[复用策略](architecture/reuse-strategy.md)。
+
 ## 1. 核心不变量
 
 1. 个人助手／数字员工是归属与授权维度，`local/cloud` 是任务执行位置；创建任务时显式选择，创建后不隐式改变。
@@ -125,7 +127,7 @@ MVP 必须支持同一部署内个人空间与一个团队空间的预授权协�
 - 所有业务查询带服务端计算的 space_id；不能使用客户端传入的 tenant_id 直接查询。跨 Space 只走受理及共享服务。
 - 唯一约束：`(space_id, agent_instance_id, task_id)` session；`(task_id, attempt_no)` attempt；`(session_id, call_id)` invocation；创建请求幂等键 `(principal_id, route_scope, idempotency_key)`。
 - Task `row_version`、租约 fence、ArtifactVersion 的乐观并发控制分别服务不同目的，不相互替代。
-- Task 状态、DomainEvent 和 Outbox 同事务提交。PostgreSQL 持久队列允许多 worker 认领，lease TTL/heartbeat 均可配置并测试。
+- PG参考路径中Task状态、DomainEvent和Outbox同事务提交；队列投递/worker重试由所选成熟实现提供。自有fence服务产品执行权与结果接纳，不重复实现队列内部通用锁/重试引擎。Temporal路线按M0决策先修订合同。
 - 输入、产物使用 opaque ID + ACL，禁止把任意本地绝对路径、对象存储 key 或下载 URL 当作授权证明。
 - 记忆默认按个人／员工／项目分别存储。并发写带版本及来源；跨项目自动学习、无审阅修改系统提示词后置。
 - M1-M4 可合并部分表以降低成本，但上述唯一约束、隔离和事件语义不能省略；DDL 由实际 migration 定义。

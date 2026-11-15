@@ -8,6 +8,7 @@
 - 所有请求认证。space_id 来自路径并与 principal 的 membership/grant 交叉验证，不能信任请求体中的 owner/tenant 字段。
 - 创建及有副作用控制操作携带 `Idempotency-Key`。相同 key+相同规范化 body 返回原结果；不同 body 返回 409。任务创建键至少保留至 Task 保留期结束，工具动作账本独立保存。
 - Task 创建返回 `202 {task_id,state,events_url}`。禁止让长任务生命周期依赖 HTTP/SSE 连接。
+- 外部API和Task语义保持中立；内部dispatch采用M0选定实现。选择Temporal时先补命令接收/状态投影与失败对账合同，不用两个引擎独立决定Task恢复。
 - 列表使用 opaque cursor + limit（默认 30，最大 100）；不能暴露底层主键遍历其他 Space。
 - 错误结构：`{error:{code,message,request_id,retryable,details}}`。details 不包含密钥、私有文件内容或其他 Space 元数据。
 - 常见状态码：401 未认证；403 无权限；404 不可见或不存在；409 版本/状态冲突；422 schema/能力不兼容；429 容量限制；503 可重试依赖失败。

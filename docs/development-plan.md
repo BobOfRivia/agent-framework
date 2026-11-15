@@ -6,6 +6,8 @@
 
 先验证上游兼容性，再交付可运行纵切面：创建 Task -> 独立 worker -> 真正工具执行 -> 持久状态 -> 产物 -> 审阅。UI、Creator 和团队能力逐步接入同一链路，不建立彼此独立的演示系统。
 
+[复用策略](architecture/reuse-strategy.md)为实施约束：开发产品语义与薄适配，复用现成执行、检查点、调度、沙箱、浏览器、文件和观测能力。下面的服务名称表示业务责任，不要求自行实现对应通用基础设施。
+
 每个工作包提交代码、必要测试、实际命令结果、合同变更和下一会话交接。工作量 S/M/L 表示相对复杂度，非工期承诺；M0 后依据可用人员、模型预算和沙箱实验再估时。
 
 ```mermaid
@@ -23,7 +25,7 @@ flowchart LR
 
 | 阶段 | 可演示结果 | 必须通过的 gate |
 | --- | --- | --- |
-| M0 | 已锁定依赖、checkpoint/审批/sandbox spike | 安装可重现；真实模型最小工具调用；恢复不重放已确认写入；开发沙箱边界记录 |
+| M0 | 已锁定依赖、checkpoint/审批/sandbox spike、调度选型 | 安装可重现；真实模型最小工具调用；恢复不重放已确认写入；成熟队列/Temporal评估与重试/恢复权威记录；沙箱边界记录 |
 | M1 | API 创建 Task，关闭客户端后 worker 继续，状态可重新读取 | AC-02/03/08/09/18 的 deterministic 部分；不能依赖内存队列 |
 | M2 | 研究／分析 Agent 生成真正文件，可释放环境并下载产物 | AC-01/10/11/13/19/24/25 的云路径 |
 | M3 | 本地 daemon 领任务；离线等待；审批、暂停和恢复可观察 | AC-05/08/09/11/12/17/24 |
@@ -39,18 +41,18 @@ M0/M1 的单机验证不替代 M7 的真正云后台执行。任何关键安全�
 | 编号 | 工作内容与产物 | 依赖 | 量级 | 验收映射 |
 | --- | --- | --- | --- | --- |
 | WP-00 | Python 项目、锁文件、lint/typecheck/test、最小 CI、前后端目录约定、配置校验 | 无 | S | AC-01/21 |
-| WP-01 | 上游兼容矩阵；真实模型+工具、PostgreSQL checkpoint、interrupt恢复、Docker实验；Codex SDK/CLI修改/测试/续接/权限spike | WP-00 | M | AC-10/11/12/19 |
+| WP-01 | 兼容矩阵；官方checkpoint/interrupt与Codex集成spike；评估现成队列vs外层Temporal并决定恢复权威；一个sandbox adapter实验 | WP-00 | M | AC-10/11/12/19/27 |
 | WP-02 | Space/成员/AgentRevision/Instance/Task migration；认证、授权查询、版本固定、schema验证 | WP-01 | M | AC-01/02/03/25 |
-| WP-03 | PostgreSQL持久jobs、事务Outbox、TaskService状态机、租约/fence、幂等创建、SSE补拉 | WP-02 | L | AC-08/09/18 |
+| WP-03 | 接入M0选定的成熟调度实现；自有Task状态/授权/幂等与事件适配，映射执行权和SSE补拉；不自建通用队列 | WP-02 | L | AC-08/09/18/27 |
 | WP-04 | DeepAgentsRunner和内置CodexRunner适配、原生session映射、事件/产物/取消控制、ToolGateway、可重复fake runner；不自研编码循环 | WP-03 | L | AC-10/11/17/24 |
-| WP-05 | TaskWorkspace、Docker开发provider、沙箱租约、代码执行、artifact版本/ACL/provenance | WP-04 | L | AC-13/19/24/25 |
+| WP-05 | 复用backend/provider SDK和一个选定沙箱adapter；TaskWorkspace/租用策略、代码执行、artifact版本/ACL/provenance；不重写文件SDK | WP-04 | L | AC-13/19/24/25/27 |
 | WP-06 | 本地daemon/CLI、一次性配对、TLS出站连接、根目录授权、心跳/离线/重连/撤销 | WP-05 | L | AC-05/07/24 |
 | WP-07 | 权限交集、Approval参数绑定、pause/cancel/resume、unknown副作用核对、预算预留/结算 | WP-04/06 | L | AC-08/09/11/12/17 |
 | WP-08 | Web项目群/私聊/任务线程、成员邀请、@路由、任务卡、artifact查看、审批/审阅操作 | WP-03/07 | L | AC-13/18/20 |
 | WP-09 | 统筹员工调用Task工具；子任务依赖/并行预算；DelegationRequest个人团队协作；基础持久日程 | WP-07/08 | L | AC-06/07/20/26 |
 | WP-10 | 能力Registry；Creator需求解析/装配；草稿编辑、样例测试、digest校验、不可变发布、实例化/回滚 | WP-05/09 | L | AC-14/16/25 |
 | WP-11 | Creator委派内置Codex生成Python工具包；隔离构建、独立测试、权限声明、包hash、登记与版本发布 | WP-10 | L | AC-15/16/19 |
-| WP-12 | 远端部署说明、health/metrics/log脱敏、secret配置、TLS、备份恢复、环境清理与成本控制 | WP-07/11 | M | AC-04/21/22 |
+| WP-12 | 远端部署、标准身份源、OTel及单一观测后端、脱敏、secret/TLS、备份恢复、环境清理与成本控制 | WP-07/11 | M | AC-04/21/22/27 |
 | WP-13 | 三套真实样例、故障注入回归、质量评估、需求追踪、Beta发布记录与新用户复现 | WP-12 | L | 全部AC，重点AC-23 |
 
 WP-08 可在 WP-03 后以稳定 fake API 设计 UI，但正式集成必须等待授权/状态合同落地。WP-10 的 Registry/schema 可提前定义；不能提前接入未经过授权检查的动态代码。
@@ -60,6 +62,10 @@ WP-08 可在 WP-03 后以稳定 fake API 设计 UI，但正式集成必须等待
 ### M0：冻结风险而非猜上游 API
 
 - 固定 Python、LangGraph、Deep Agents、LangChain模型集成、PostgreSQL checkpointer 的兼容版本和许可证。
+- 复用官方checkpointer/序列化；通用规划、上下文、skills、文件工具和临时subagents直接采用Deep Agents能力，不另写同类manager。
+- 评估成熟队列与外层Temporal：比较维护性、部署成本、事务投递、崩溃恢复、人审等待、定时和原生Codexjob续接；明确谁负责重试/恢复。当前不锁定Procrastinate或其他候选。
+- 默认PG路线可保留官方持久checkpointer；若选Temporal，先在ADR和领域/API合同写清状态投影、命令入口、checkpoint与workflow重放的边界。官方深度集成的Preview能力不能未经验证作为稳定性依据。
+- 创建 `docs/dispatch-decision.md`，写入候选、实验、选择、回退和受影响合同；未决前不开始WP-03。该文件由M0创建，目前尚不存在。
 - 用成功/失败实验确认 `thread_id`、checkpointer setup、interrupt resume、工具结果持久化、恢复节点重入行为。
 - 测试 API-only 与 code sandbox 两条能力路径；明确本机路径和沙箱路径映射。
 - 验证文件工具、shell、MCP和临时subagent均经过授权/调用账本；验证恢复产生新attempt后，同一已持久tool intent的action_key保持稳定。若框架内置工具存在绕过路径，先禁用或替换，不能等到后期再补策略。
@@ -71,6 +77,7 @@ WP-08 可在 WP-03 后以稳定 fake API 设计 UI，但正式集成必须等待
 - checkpoint 与 Task 状态更新之间定义可恢复桥接，不能假定跨系统事务。
 - 准备外部写工具测试替身与调用账本，在杀进程场景验证幂等／unknown 分类。
 - 本地与云端共用声明、工具合同、产物和事件接口，保留不同的路径、账号与环境能力。
+- 所选队列/工作流引擎提供投递、重试与worker生命周期基础；产品只适配任务/授权/预算/调用账本。禁止SDK、队列和graph对同一不明副作用并行自动重试。
 
 ### M4：协作可验证
 

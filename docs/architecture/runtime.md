@@ -2,6 +2,8 @@
 
 本页说明执行机制；实体与状态以 [领域模型](../domain-model.md) 为权威，事件与设备协议见 [API 与事件](../api-and-events.md)。v0.1 中 `tenant_id = space_id`。
 
+本页调度与持久化流程是PG参考路径。按[复用策略](reuse-strategy.md)，M0先选择成熟队列或外层Temporal；若选择Temporal，须先修订本页的执行权、状态桥接及恢复映射。通用规划、检查点和上下文能力复用框架，不自行实现另一套引擎。
+
 ## 执行对象与不变量
 
 - 一个 Task 只有一位负责人；parent_task_id 只用于同 tenant 的父子任务。跨 tenant 经 DelegationRequest 在接收方创建独立 Task，不复用父子关系。

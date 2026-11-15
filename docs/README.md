@@ -13,6 +13,7 @@
 - [整体架构](architecture/overview.md)
 - [运行时、LangGraph 与 Deep Agents](architecture/runtime.md)
 - [内置Codex编码执行器](architecture/coding-executor.md)
+- [成熟组件复用与调度选型策略](architecture/reuse-strategy.md)
 - [领域模型与状态机](domain-model.md)
 - [API、事件和设备协议](api-and-events.md)
 - [能力、技能与插件](architecture/capabilities.md)

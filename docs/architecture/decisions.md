@@ -10,7 +10,7 @@
 
 澄清：专用编码员工按ADR-009复用Codex；“单一主栈”不禁止现成专用执行器，但不自研另一套通用编程Agent内核。
 
-**理由与代价**：减少首版基础设施与双运行时维护，保留领域/应用/基础设施边界。Temporal、多 runtime、原生桌面客户端后置；新内核通过适配器接入，不能反向改写产品状态模型。
+**理由与代价**：减少首版基础设施与双运行时维护，保留领域/应用/基础设施边界。多通用runtime、原生桌面客户端后置；Temporal是否用于外层持久工作流由ADR-010的M0评估决定。新内核通过适配器接入，不能反向改写产品状态模型。
 
 **验证**：M0 冻结实际依赖版本及锁文件，跑通单个云任务、本地任务、checkpoint 与审批恢复。[官方分层](https://docs.langchain.com/oss/python/langgraph/overview)。
 
@@ -77,3 +77,13 @@
 **理由与代价**：复用成熟代码编辑、测试和上下文循环；平台保留工作定义、输入授权、隔离、版本、审阅与发布。原生工具观测/审批/恢复与框架checkpoint不同，需专用adapter和能力矩阵，不能伪装逐内部工具接入自有ToolGateway。
 
 **验证**：M0跑真实修改/测试/续接/取消与权限实验；WP-04接入，WP-11复用；AC-15保留真实Codex调用与独立验证证据。详见[编码执行器](coding-executor.md)。
+
+## ADR-010：成熟组件优先，调度选型先于实现
+
+**决策**：确定复用Deep Agents原生harness、LangGraph官方checkpointer、Codex和已有backend/provider接口。浏览器、Office、认证与观测采用成熟库/标准。每类先接一个实现，产品保留身份版本、Creator、委派授权、任务协作、产物与验收。
+
+**调度状态**：尚未选定实现。M0比较成熟持久队列与外层Temporal，记录维护性、部署成本、恢复实验、单一重试权威与合同影响。PostgreSQL仍为业务库；不默认写通用队列，也不默认引入Temporal或某个PG队列包。
+
+**限制**：官方LangGraph/Deep Agents Temporal集成当前仍属Preview，不能仅因核心Temporal成熟就假定集成已稳定。采用原生集成或外层Activity路线，都须明确graph/native checkpoint、workflow历史与业务Task状态的归属；不得同时运行三个独立恢复控制器。外部未知副作用仍由业务账本/回执核对。
+
+**验证**：M0形成dispatch-decision与兼容矩阵，AC-27通过；若选Temporal，先修订领域/API/运维合同再开始M1。见[复用策略](reuse-strategy.md)。
