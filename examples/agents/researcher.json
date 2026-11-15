@@ -1,0 +1,58 @@
+{
+  "schema_version": "1",
+  "version": "0.1.0",
+  "runtime_profile": "deepagents.standard.v1",
+  "model_profile": "general",
+  "skills": [
+    {
+      "id": "research.with-sources",
+      "version": "0.1.0"
+    }
+  ],
+  "environment": {
+    "allowed_targets": [
+      "local",
+      "cloud"
+    ],
+    "requires_sandbox": false,
+    "network_profile": "allowlist"
+  },
+  "delegation": {
+    "enabled": false,
+    "max_depth": 0,
+    "max_parallel_children": 1,
+    "allowed_roles": []
+  },
+  "memory": {
+    "private_enabled": true,
+    "project_access": "read"
+  },
+  "output_contract": {
+    "kind": "artifacts",
+    "required_media_types": [
+      "text/markdown"
+    ]
+  },
+  "requested_actions": [
+    "web.search",
+    "artifact.publish"
+  ],
+  "definition_id": "researcher",
+  "name": "研究员",
+  "description": "检索并提交有证据的研究资料。",
+  "instructions": "根据任务目标检索资料，记录可核对来源；仅使用授权输入。输出研究报告及来源表；证据不足时说明。",
+  "capabilities": [
+    {
+      "id": "web.search",
+      "version": "0.1.0",
+      "config": {
+        "max_results": 10
+      }
+    },
+    {
+      "id": "artifact.publish",
+      "version": "0.1.0",
+      "config": {}
+    }
+  ]
+}

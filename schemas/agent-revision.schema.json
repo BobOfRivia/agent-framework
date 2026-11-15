@@ -1,0 +1,241 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agent-framework:agent-revision:v1",
+  "title": "AgentRevision declaration",
+  "description": "Configuration contract; owner credentials and runtime grants are bound separately. Publication still requires semantic validation.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "definition_id",
+    "version",
+    "name",
+    "description",
+    "instructions",
+    "runtime_profile",
+    "model_profile",
+    "capabilities",
+    "skills",
+    "environment",
+    "delegation",
+    "memory",
+    "output_contract",
+    "requested_actions"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1"
+    },
+    "definition_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 160,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 120
+    },
+    "description": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1000
+    },
+    "instructions": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 32000
+    },
+    "runtime_profile": {
+      "enum": [
+        "deepagents.standard.v1"
+      ]
+    },
+    "model_profile": {
+      "enum": [
+        "general",
+        "fast",
+        "reasoning"
+      ]
+    },
+    "capabilities": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 30,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "version",
+          "config"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160,
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$"
+          },
+          "version": {
+            "type": "string",
+            "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+          },
+          "config": {
+            "type": "object"
+          }
+        }
+      }
+    },
+    "skills": {
+      "type": "array",
+      "maxItems": 20,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "version"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160,
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$"
+          },
+          "version": {
+            "type": "string",
+            "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+          }
+        }
+      }
+    },
+    "environment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "allowed_targets",
+        "requires_sandbox",
+        "network_profile"
+      ],
+      "properties": {
+        "allowed_targets": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "local",
+              "cloud"
+            ]
+          }
+        },
+        "requires_sandbox": {
+          "type": "boolean"
+        },
+        "network_profile": {
+          "enum": [
+            "none",
+            "allowlist"
+          ]
+        }
+      }
+    },
+    "delegation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "enabled",
+        "allowed_roles",
+        "max_depth",
+        "max_parallel_children"
+      ],
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "max_depth": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 3
+        },
+        "max_parallel_children": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 4
+        },
+        "allowed_roles": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160,
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$"
+          }
+        }
+      }
+    },
+    "memory": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "private_enabled",
+        "project_access"
+      ],
+      "properties": {
+        "private_enabled": {
+          "type": "boolean"
+        },
+        "project_access": {
+          "enum": [
+            "none",
+            "read",
+            "read_write"
+          ]
+        }
+      }
+    },
+    "output_contract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "required_media_types"
+      ],
+      "properties": {
+        "kind": {
+          "enum": [
+            "structured",
+            "artifacts"
+          ]
+        },
+        "required_media_types": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "result_schema": {
+          "type": "object"
+        }
+      }
+    },
+    "requested_actions": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z][a-z0-9_.:-]*$"
+      }
+    }
+  }
+}

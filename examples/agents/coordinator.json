@@ -1,0 +1,60 @@
+{
+  "schema_version": "1",
+  "version": "0.1.0",
+  "runtime_profile": "deepagents.standard.v1",
+  "model_profile": "reasoning",
+  "skills": [],
+  "environment": {
+    "allowed_targets": [
+      "local",
+      "cloud"
+    ],
+    "requires_sandbox": false,
+    "network_profile": "allowlist"
+  },
+  "delegation": {
+    "enabled": true,
+    "max_depth": 2,
+    "max_parallel_children": 2,
+    "allowed_roles": [
+      "researcher",
+      "analyst"
+    ]
+  },
+  "memory": {
+    "private_enabled": true,
+    "project_access": "read"
+  },
+  "output_contract": {
+    "kind": "artifacts",
+    "required_media_types": [
+      "text/markdown"
+    ]
+  },
+  "requested_actions": [
+    "task.delegate",
+    "task.read",
+    "artifact.publish"
+  ],
+  "definition_id": "coordinator",
+  "name": "统筹员工",
+  "description": "以任务服务协调研究、分析和审阅。",
+  "instructions": "明确目标、验收条件和预算，使用任务工具建立真实子任务。只根据已确认状态报告进度；汇总已批准共享的产物，提交人审。",
+  "capabilities": [
+    {
+      "id": "task.delegate",
+      "version": "0.1.0",
+      "config": {}
+    },
+    {
+      "id": "task.inspect",
+      "version": "0.1.0",
+      "config": {}
+    },
+    {
+      "id": "artifact.publish",
+      "version": "0.1.0",
+      "config": {}
+    }
+  ]
+}

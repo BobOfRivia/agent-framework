@@ -1,0 +1,65 @@
+{
+  "schema_version": "1",
+  "version": "0.1.0",
+  "runtime_profile": "deepagents.standard.v1",
+  "model_profile": "general",
+  "skills": [
+    {
+      "id": "data.analysis",
+      "version": "0.1.0"
+    }
+  ],
+  "environment": {
+    "allowed_targets": [
+      "local",
+      "cloud"
+    ],
+    "requires_sandbox": true,
+    "network_profile": "none"
+  },
+  "delegation": {
+    "enabled": false,
+    "max_depth": 0,
+    "max_parallel_children": 1,
+    "allowed_roles": []
+  },
+  "memory": {
+    "private_enabled": true,
+    "project_access": "read"
+  },
+  "output_contract": {
+    "kind": "artifacts",
+    "required_media_types": [
+      "text/markdown",
+      "text/csv"
+    ]
+  },
+  "requested_actions": [
+    "file.read",
+    "code.execute",
+    "artifact.publish"
+  ],
+  "definition_id": "analyst",
+  "name": "分析员",
+  "description": "通过代码计算和分析已授权数据。",
+  "instructions": "先检查输入结构和数据质量，按规格进行确定性计算；在授权工作区运行代码，输出结果文件、计算方法及异常。",
+  "capabilities": [
+    {
+      "id": "file.read",
+      "version": "0.1.0",
+      "config": {}
+    },
+    {
+      "id": "code.python",
+      "version": "0.1.0",
+      "config": {
+        "timeout_seconds": 120
+      }
+    },
+    {
+      "id": "artifact.publish",
+      "version": "0.1.0",
+      "config": {}
+    }
+  ]
+}

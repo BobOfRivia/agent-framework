@@ -1,0 +1,29 @@
+{
+  "schema_version": "1",
+  "input_refs": [],
+  "budget": {
+    "max_model_calls": 30,
+    "max_tool_calls": 60,
+    "max_runtime_seconds": 1800,
+    "max_cost_usd": 5
+  },
+  "review_policy": "human",
+  "title": "云端竞品研究",
+  "goal": "研究指定领域的三个竞品，提交带来源的Markdown报告与CSV对比表。所需领域和目标受众从已批准任务输入中补充；缺少关键信息则请求补充。",
+  "assignee_agent_instance_id": "agent_coordinator_demo",
+  "conversation_id": "room_project_demo",
+  "execution": {
+    "target": "cloud"
+  },
+  "acceptance_contract": {
+    "required_media_types": [
+      "text/markdown",
+      "text/csv"
+    ],
+    "criteria": [
+      "输出文件真实存在且可以打开",
+      "数值与证据可核对",
+      "仅使用获授权输入并提交人工审阅"
+    ]
+  }
+}

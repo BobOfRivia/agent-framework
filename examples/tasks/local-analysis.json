@@ -1,0 +1,34 @@
+{
+  "schema_version": "1",
+  "input_refs": [
+    {
+      "artifact_id": "artifact_local_csv_demo",
+      "version": 1
+    }
+  ],
+  "budget": {
+    "max_model_calls": 30,
+    "max_tool_calls": 60,
+    "max_runtime_seconds": 1800,
+    "max_cost_usd": 5
+  },
+  "review_policy": "human",
+  "title": "本地CSV分析",
+  "goal": "读取已批准根目录中的样本CSV，按任务指定评分规则生成结果CSV和说明文档。不得读取未授权目录，不得上传原始资料。",
+  "assignee_agent_instance_id": "agent_analyst_local_demo",
+  "execution": {
+    "target": "local",
+    "device_id": "device_mac_demo"
+  },
+  "acceptance_contract": {
+    "required_media_types": [
+      "text/markdown",
+      "text/csv"
+    ],
+    "criteria": [
+      "输出文件真实存在且可以打开",
+      "数值与证据可核对",
+      "仅使用获授权输入并提交人工审阅"
+    ]
+  }
+}

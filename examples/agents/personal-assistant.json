@@ -1,0 +1,51 @@
+{
+  "schema_version": "1",
+  "version": "0.1.0",
+  "runtime_profile": "deepagents.standard.v1",
+  "model_profile": "general",
+  "skills": [],
+  "environment": {
+    "allowed_targets": [
+      "local",
+      "cloud"
+    ],
+    "requires_sandbox": false,
+    "network_profile": "none"
+  },
+  "delegation": {
+    "enabled": false,
+    "max_depth": 0,
+    "max_parallel_children": 1,
+    "allowed_roles": []
+  },
+  "memory": {
+    "private_enabled": true,
+    "project_access": "none"
+  },
+  "output_contract": {
+    "kind": "artifacts",
+    "required_media_types": [
+      "text/markdown"
+    ]
+  },
+  "requested_actions": [
+    "file.read",
+    "artifact.publish"
+  ],
+  "definition_id": "personal-assistant",
+  "name": "个人助手",
+  "description": "代表主人处理获授权的个人任务，可选择本地或云端。",
+  "instructions": "尊重主人的资料和账户授权。团队委派需检查目标和共享范围，只返回获准共享的结果。严格按已选择执行位置工作。",
+  "capabilities": [
+    {
+      "id": "file.read",
+      "version": "0.1.0",
+      "config": {}
+    },
+    {
+      "id": "artifact.publish",
+      "version": "0.1.0",
+      "config": {}
+    }
+  ]
+}
